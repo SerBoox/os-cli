@@ -16,7 +16,23 @@ func ShowInstances(
 		Aliases: []string{"show"},
 		Usage:   "Show instances",
 		Flags:   flags,
-		Action: func(c *cli.Context) error {
+		Action: func(c *cli.Context) (
+			err error,
+		) {
+
+			err = cliArgs.ValidateAuthHost()
+			if err != nil {
+				return err
+			}
+			err = cliArgs.ValidateLogin()
+			if err != nil {
+				return err
+			}
+			err = cliArgs.ValidatePassword()
+			if err != nil {
+				return err
+			}
+
 			return controllers.ShowInstances(
 				cliArgs,
 			)

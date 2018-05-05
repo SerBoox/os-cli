@@ -16,7 +16,35 @@ func CreateInstance(
 		Aliases: []string{"create"},
 		Usage:   "Create instance",
 		Flags:   flags,
-		Action: func(c *cli.Context) error {
+		Action: func(c *cli.Context) (
+			err error,
+		) {
+
+			err = cliArgs.ValidateAuthHost()
+			if err != nil {
+				return err
+			}
+			err = cliArgs.ValidateLogin()
+			if err != nil {
+				return err
+			}
+			err = cliArgs.ValidatePassword()
+			if err != nil {
+				return err
+			}
+			err = cliArgs.ValidateInstName()
+			if err != nil {
+				return err
+			}
+			err = cliArgs.ValidateImageRef()
+			if err != nil {
+				return err
+			}
+			err = cliArgs.ValidateFlavorRef()
+			if err != nil {
+				return err
+			}
+
 			return controllers.CreateInstance(
 				cliArgs,
 			)
