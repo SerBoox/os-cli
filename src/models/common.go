@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/serboox/os-cli/exceptions"
+	"github.com/serboox/os-cli/src/exceptions"
 )
 
 // Response common interface
@@ -21,9 +21,7 @@ type sendDataCtx struct {
 	newReader  *strings.Reader
 }
 
-func (ctx sendDataCtx) Send() (
-	res *http.Response, err error,
-) {
+func (ctx *sendDataCtx) Send() (res *http.Response, err error) {
 	newReq, err := http.NewRequest(
 		ctx.urlMethod, //"POST"
 		ctx.url,
@@ -47,7 +45,9 @@ func (ctx sendDataCtx) Send() (
 			Message: err.Error(),
 		}
 	}
+
 	defer res.Body.Close()
+
 	resBytes, _ := ioutil.ReadAll(res.Body)
 
 	err = json.Unmarshal(resBytes, ctx.res)
@@ -58,5 +58,6 @@ func (ctx sendDataCtx) Send() (
 			JSON:    string(resBytes),
 		}
 	}
+
 	return res, nil
 }

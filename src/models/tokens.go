@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/serboox/os-cli/configs"
-	"github.com/serboox/os-cli/exceptions"
+	"github.com/serboox/os-cli/src/configs"
+	"github.com/serboox/os-cli/src/exceptions"
 )
 
 // ReqAuthTokens structure declared request JSON
@@ -50,7 +50,7 @@ type ResAuthTokens struct {
 
 // ResAuthTokensToken structure declared response JSON part
 type ResAuthTokensToken struct {
-	IsDomani  bool                   `json:"is_domain"`
+	IsDomain  bool                   `json:"is_domain"`
 	Methods   []string               `json:"methods"`
 	Roles     []ResAuthTokensRoles   `json:"roles"`
 	ExpiresAt string                 `json:"expires_at"`
@@ -94,7 +94,7 @@ type ResAuthTokensEndpoints struct {
 	RegionID  string `json:"region_id"`
 }
 
-//Post Password authentication with unscoped authorization
+// Post password authentication with unscoped authorization
 func (res *ResAuthTokens) Post(cliArgs *configs.CliArgs) (
 	headers http.Header, err error,
 ) {
@@ -130,7 +130,7 @@ func (res *ResAuthTokens) Post(cliArgs *configs.CliArgs) (
 
 	ctx := sendDataCtx{
 		methodName: methodName,
-		urlMethod:  "POST",
+		urlMethod:  http.MethodPost,
 		url:        cliArgs.AuthHost,
 		headers: map[string]string{
 			"Content-Type": "application/json",
@@ -140,13 +140,14 @@ func (res *ResAuthTokens) Post(cliArgs *configs.CliArgs) (
 	}
 
 	resp, err := ctx.Send()
+
 	return resp.Header, err
 }
 
-//FindEndpointURL find endpoint in result set
-func (res *ResAuthTokens) FindEndpointURL(end configs.Endpoint) (
-	string, error,
-) {
+// FindEndpointURL find endpoint in result set
+func (res *ResAuthTokens) FindEndpointURL(
+	end configs.Endpoint,
+) (string, error) {
 	for _, catalog := range res.Token.Catalog {
 		if catalog.Name == configs.GetEntrypoint(end) {
 			for _, point := range catalog.Endpoints {
@@ -156,5 +157,6 @@ func (res *ResAuthTokens) FindEndpointURL(end configs.Endpoint) (
 			}
 		}
 	}
-	return "", errors.New("Endpoint not be found in result set")
+
+	return "", errors.New("endpoint not be found in result set")
 }

@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/serboox/os-cli/configs"
+	"github.com/serboox/os-cli/src/configs"
 )
 
 // ResServersDetail structure declared response JSON
@@ -105,10 +105,10 @@ func (res *ResServersDetail) Get(token, url string) (
 ) {
 	ctx := sendDataCtx{
 		methodName: "ResServersDetail.Get",
-		urlMethod:  "GET",
+		urlMethod:  http.MethodGet,
 		url:        url,
 		headers: map[string]string{
-			configs.XAuthTokenKey: token,
+			configs.XAuth: token,
 		},
 		res:       res,
 		newReader: new(strings.Reader),

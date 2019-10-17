@@ -1,12 +1,12 @@
 package configs
 
-//XAuthTokenKey header key
-const XAuthTokenKey = "X-Auth-Token"
+// XAuth header key
+const XAuth = "X-Auth-Token"
 
-//XSubjectTokenKey header key
+// XSubjectTokenKey header key
 const XSubjectTokenKey = "X-Subject-Token"
 
-//DefaultAvailabilityZone declare default zone
+// DefaultAvailabilityZone declare default zone
 const DefaultAvailabilityZone = "nova"
 
 // Endpoint service type
@@ -14,7 +14,7 @@ type Endpoint int
 
 var (
 	// Nova endpoint item
-	Nova Endpoint = 0
+	Nova Endpoint
 	// Cinder endpoint item
 	Cinder Endpoint = 1
 	// Keystone endpoint item
@@ -46,5 +46,6 @@ func GetEntrypoint(e Endpoint) string {
 		7: "cinderv2",
 		8: "placement",
 	}
+
 	return endpointMap[e]
 }

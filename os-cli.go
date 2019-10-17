@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/serboox/os-cli/cmd"
-	"github.com/serboox/os-cli/configs"
+	"github.com/serboox/os-cli/src/cmd"
+	"github.com/serboox/os-cli/src/configs"
 	"github.com/urfave/cli"
 )
 

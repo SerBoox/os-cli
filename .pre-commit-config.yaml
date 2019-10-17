@@ -1,0 +1,16 @@
+repos:
+  - repo: git://github.com/dnephin/pre-commit-golang
+    rev: v0.3.4
+    hooks:
+      - id: go-fmt
+        exclude: "^vendor/"
+      - id: go-vet
+        exclude: "^vendor/"
+      - id: go-lint
+        exclude: "^vendor/"
+      #- id: validate-toml
+      #  exclude: '^vendor/'
+      #- id: no-go-testing
+      #  exclude: '^vendor/'
+      #- id: gometalinter
+      #  exclude: '^vendor/'

@@ -4,12 +4,11 @@ import (
 	"os"
 
 	"github.com/olekukonko/tablewriter"
-	"github.com/serboox/os-cli/models"
+	"github.com/serboox/os-cli/src/models"
 )
 
-//ShowNewServer send information in stdout
-func ShowNewServer(server models.ResServers) {
-
+// ShowNewServer send information in stdout
+func ShowNewServer(server *models.ResServers) {
 	columns := []string{
 		"Instance ID",
 		"Status",

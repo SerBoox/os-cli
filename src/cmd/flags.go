@@ -1,11 +1,11 @@
 package cmd
 
 import (
-	"github.com/serboox/os-cli/configs"
+	"github.com/serboox/os-cli/src/configs"
 	"github.com/urfave/cli"
 )
 
-//GetFlags function define input cli params
+// GetFlags function define input cli params
 func GetFlags(cliArgs *configs.CliArgs) []cli.Flag {
 	return []cli.Flag{
 		cli.StringFlag{

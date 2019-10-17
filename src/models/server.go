@@ -6,8 +6,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/serboox/os-cli/configs"
-	"github.com/serboox/os-cli/exceptions"
+	"github.com/serboox/os-cli/src/configs"
+	"github.com/serboox/os-cli/src/exceptions"
 )
 
 // ReqServers structure declared request JSON
@@ -55,11 +55,19 @@ type ResServersLinks struct {
 	Rel  string `json:"rel"`
 }
 
-//Post Create instance
+// Post Create instance
 func (res *ResServers) Post(cliArgs *configs.CliArgs, token, url string) (
 	resp *http.Response, err error,
 ) {
 	methodName := "ResServers.Post"
+
+	securityGroups := make([]ReqServersSecurityGroups, 0, 1)
+	securityGroups = append(
+		securityGroups,
+		ReqServersSecurityGroups{
+			Name: "default",
+		},
+	)
 
 	req := ReqServers{
 		Server: ReqServersItem{
@@ -68,11 +76,7 @@ func (res *ResServers) Post(cliArgs *configs.CliArgs, token, url string) (
 			FlavorRef:        strconv.FormatInt(cliArgs.FlavorRef, 10),
 			AvailabilityZone: configs.DefaultAvailabilityZone,
 			DiskConfig:       "AUTO",
-			SecurityGroups: []ReqServersSecurityGroups{
-				ReqServersSecurityGroups{
-					Name: "default",
-				},
-			},
+			SecurityGroups:   securityGroups,
 		},
 	}
 
@@ -89,11 +93,11 @@ func (res *ResServers) Post(cliArgs *configs.CliArgs, token, url string) (
 
 	ctx := sendDataCtx{
 		methodName: methodName,
-		urlMethod:  "POST",
+		urlMethod:  http.MethodPost,
 		url:        url,
 		headers: map[string]string{
-			"Content-Type":        "application/json",
-			configs.XAuthTokenKey: token,
+			"Content-Type": "application/json",
+			configs.XAuth:  token,
 		},
 		res:       res,
 		newReader: newReader,

@@ -29,3 +29,10 @@ _testmain.go
 *.out
 
 debug
+
+# IDE
+.vscode
+.idea
+
+# Other
+os-cli

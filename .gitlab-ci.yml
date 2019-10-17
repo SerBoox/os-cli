@@ -1,0 +1,30 @@
+variables:
+  GOLANGCI_VERSION: 1.17.1
+  IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_BUILD_REF_NAME
+
+before_script:
+  # - docker info
+  # - env
+
+stages:
+  - lint
+  - build
+
+lint:
+  only:
+    - master
+    - tags
+  stage: lint
+  script:
+    - docker run --rm --env GO111MODULE=on -v $(pwd):/go/src -w /go/src golangci/golangci-lint:v$GOLANGCI_VERSION golangci-lint run
+
+build:
+  only:
+    refs:
+      - master
+      - tags
+  stage: build
+  script:
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    - docker build -t $IMAGE_TAG .
+    - docker push $IMAGE_TAG

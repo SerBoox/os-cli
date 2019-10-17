@@ -1,12 +1,9 @@
-BUILDTAGS=
-
 APP?=os-cli
 USERSPACE?=serboox
 RELEASE?=1.0.0
 PROJECT?=github.com/${USERSPACE}/${APP}
+BUILD_TIME?=$(shell date -u '+%Y-%m-%d_%H:%M:%S')
 GOOS?=linux
-HTTP_PORT?=8080
-
 REPO_INFO=$(shell git config --get remote.origin.url)
 
 ifndef COMMIT
@@ -17,29 +14,28 @@ ifndef TEST_DIR
 	TEST_DIR :=...
 endif
 
+# Default target executed when no arguments are given to make.
+default_target: run-r
+
 clean:
 	rm -f ${APP}
 
-vendor: clean
-	go get -u github.com/golang/dep/cmd/dep \
-	&& dep ensure
-
-build:
-	GOOS=${GOOS} CGO_ENABLED=1 go build -a -v -installsuffix cgo \
-		-ldflags "-s -w -X ${PROJECT}/version.Release=${RELEASE} -X ${PROJECT}/version.Commit=${COMMIT} -X ${PROJECT}/version.Repo=${REPO_INFO}" \
-		-o ~/Documents/Linux_Shared/${APP}
-
-fmt:
+build: clean golangci-lint
 	@echo "+ $@"
-	@go list -f '{{if len .TestGoFiles}}"gofmt -s -l {{.Dir}}"{{end}}' $(shell go list ${PROJECT}/... | grep -v vendor) | xargs -L 1 sh -c
+	GOFLAGS=-mod=vendor CGO_ENABLED=1 go build -v -installsuffix cgo \
+		-ldflags "-s -w -X ${PROJECT}/src/version.Release=${RELEASE} -X ${PROJECT}/src/version.Commit=${COMMIT} -X ${PROJECT}/src/version.Repository=${REPO_INFO} -X ${PROJECT}/src/version.BuildTime=${BUILD_TIME}"
 
-lint:
+golangci-lint-base:
 	@echo "+ $@"
-	@go list -f '{{if len .TestGoFiles}}"golint {{.Dir}}/..."{{end}}' $(shell go list ${PROJECT}/... | grep -v vendor) | xargs -L 1 sh -c
+	GO111MODULE=on golangci-lint run -c .golangci-simple.yml ./...
 
-vet:
+golangci-lint:
 	@echo "+ $@"
-	@go vet $(shell go list ${PROJECT}/... | grep -v vendor)
+	GO111MODULE=on golangci-lint run ./...
+
+docker-build:
+	@echo "+ $@"
+	docker build -t ${APP}:latest . --no-cache --force-rm
 
 test:
 	@echo "+ $@"
@@ -48,17 +44,6 @@ test:
 test-v:
 	@echo "+ $@"
 	@go test -v $(shell go list ${PROJECT}/... | grep -v -P '(vendor|version|tools)')
-
-test-custom:
-	@go test -v $(shell go list ${PROJECT}/... | grep ${TEST_DIR})		
-
-test-race:
-	@echo "+ $@"
-	@go test -v -race $(shell go list ${PROJECT}/... | grep -v vendor)	
-
-test-full: vendor fmt lint vet
-	@echo "+ $@"
-	@go test -v -race -tags "$(BUILDTAGS) cgo" $(shell go list ${PROJECT}/... | grep -v vendor)
 
 cover:
 	@echo "+ $@"

@@ -1,12 +1,12 @@
 package cmd
 
 import (
-	"github.com/serboox/os-cli/configs"
-	"github.com/serboox/os-cli/controllers"
+	"github.com/serboox/os-cli/src/configs"
+	"github.com/serboox/os-cli/src/controllers"
 	"github.com/urfave/cli"
 )
 
-//CreateInstance cli command
+// CreateInstance cli command
 func CreateInstance(
 	flags []cli.Flag,
 	cliArgs *configs.CliArgs,
@@ -16,10 +16,7 @@ func CreateInstance(
 		Aliases: []string{"create"},
 		Usage:   "Create instance",
 		Flags:   flags,
-		Action: func(c *cli.Context) (
-			err error,
-		) {
-
+		Action: func(c *cli.Context) (err error) {
 			err = cliArgs.ValidateAuthHost()
 			if err != nil {
 				return err

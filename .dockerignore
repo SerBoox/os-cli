@@ -1,0 +1,9 @@
+.idea
+.vscode
+.git
+tmp
+bin
+pkg
+config.yaml
+os-cli
+debian
